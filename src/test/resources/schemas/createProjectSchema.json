@@ -1,0 +1,27 @@
+{
+  "id": "http://json-schema.org/draft-04/schema#",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "Id": { "type": "integer", "minimum": 1 },
+    "Content": { "type": "string", "minLength": 1 },
+    "ItemType": { "type": "integer" },
+    "Checked": { "type": "boolean" },
+    "ProjectId": { "type": ["integer", "null"] },
+    "ParentId": { "type": ["integer", "null"] },
+    "Path": { "type": "string" },
+    "Collapsed": { "type": "boolean" },
+    "DateString": { "type": ["string", "null"] },
+    "DateStringPriority": { "type": "integer" },
+    "DueDate": { "type": "string" },
+    "ItemOrder": { "type": ["integer", "null"] },
+    "Priority": { "type": "integer" },
+    "Children": { "type": "array" },
+    "LastSyncedDateTime": { "type": "string" },
+    "LastUpdatedDate": { "type": "string" },
+    "Deleted": { "type": "boolean" },
+    "SyncClientCreationId": { "type": ["string", "null"] }
+  },
+  "additionalProperties": true,
+  "required": ["Id", "Content"]
+}

@@ -1,0 +1,70 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.jbgroup'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    //restassured
+    testImplementation("io.rest-assured:rest-assured:6.0.1")
+    implementation("org.json:json:20260814")
+
+    //JSON Schema Validation
+    implementation("io.rest-assured:json-schema-validator:6.0.1")
+
+    //fasterxml
+    implementation('com.fasterxml.jackson.core:jackson-databind:2.17.2')
+    implementation('com.fasterxml.jackson.core:jackson-core:2.17.2')
+    implementation('com.fasterxml.jackson.core:jackson-annotations:2.17.2')
+
+    //Cucumber
+    implementation("io.cucumber:cucumber-java:7.34.8")
+    testImplementation("io.cucumber:cucumber-junit-platform-engine:7.34.8")
+
+}
+
+test {
+    useJUnitPlatform()
+}
+
+//se indica que use las librerias de cucumber
+configurations {
+    cucumberRuntime {
+        extendsFrom testImplementation
+    }
+}
+
+tasks.register('cucumber', JavaExec) {
+    //compila todas las clases
+    dependsOn assemble, testClasses
+
+    //buscar todos los features para ejecutar
+    mainClass = "io.cucumber.core.cli.Main"
+
+    //coloca las referencias de los test
+    classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
+    args = [
+            "--plugin", "pretty",   //miesntras va ejecutando va ir mostrando los reportes
+            "--plugin", "html:target/cucumber-report.html",
+            "--plugin", "html:target/cucumber-report.json",
+            "--glue", "steps",      //carpeta donde se encuentra los "features" que Cucumber buscará a ejecutar
+            "--glue", "tarea3",     //carpeta donde se encuentra los "features" que Cucumber buscará a ejecutar
+            "src/test/resources",   //indica la ruta donde busca los "features"
+            "--tags", project.findProperty("suite") ?: "@SmokeTest or @Regression" //etiquetas que Cucumber buscará para ejecutar por terminal
+    ]
+}
